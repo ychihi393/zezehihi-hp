@@ -24,6 +24,9 @@ export default function HeroSection() {
       </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+        {/* SEO用のh1タグ（視覚的には非表示） */}
+        <h1 className="sr-only">株式会社ゼゼヒヒ | 不動産集客支援・広告業・各種代理店</h1>
+        
         {/* メインロゴ - GSAPアニメーション版 */}
         <motion.div
           className="relative mb-12 flex justify-center items-center"
