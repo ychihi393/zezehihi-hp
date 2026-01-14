@@ -33,7 +33,7 @@ git push -u origin main
 ### ビルド設定
 - **Framework preset**: `Next.js (Static HTML Export)`
 - **Build command**: `npm run build`
-- **Build output directory**: `.next`
+- **Build output directory**: `out` ⚠️ 重要：`.next`ではなく`out`を指定
 - **Root directory**: `/` (空白のまま)
 - **Node.js version**: `18` または `20`
 
