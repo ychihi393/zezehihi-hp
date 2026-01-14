@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://zezehihi-hp.pages.dev"; // Cloudflare PagesのURLに変更してください
+  const baseUrl = "https://zezehihi-hp.pages.dev";
 
   return {
     rules: [

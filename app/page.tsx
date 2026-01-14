@@ -12,8 +12,8 @@ export default function Home() {
     "@type": "Organization",
     name: "株式会社ゼゼヒヒ",
     legalName: "株式会社ゼゼヒヒ",
-    url: "https://zezehihi-hp.pages.dev", // Cloudflare PagesのURLに変更してください
-    logo: "https://zezehihi-hp.pages.dev/logo.png", // Cloudflare PagesのURLに変更してください
+    url: "https://zezehihi-hp.pages.dev",
+    logo: "https://zezehihi-hp.pages.dev/logo.png",
     description:
       "株式会社ゼゼヒヒは「是々非々」の精神を持ち、既存の枠組みにとらわれず顧客メリットを最大化する会社です。",
     address: {
