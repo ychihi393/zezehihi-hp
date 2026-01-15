@@ -1,8 +1,49 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import ZezehihiLogoAnimated from "./ZezehihiLogoAnimated";
+
+// 文字を一文字ずつフェードインさせるコンポーネント
+function CharFadeInText({ 
+  text, 
+  className, 
+  style, 
+  delay = 0 
+}: { 
+  text: string; 
+  className?: string; 
+  style?: React.CSSProperties; 
+  delay?: number;
+}) {
+  const containerRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        const chars = containerRef.current.querySelectorAll('.char-fade-in');
+        chars.forEach((char, index) => {
+          setTimeout(() => {
+            char.classList.add('visible');
+          }, index * 50); // 各文字を50msずつ遅らせる
+        });
+      }
+    }, delay * 1000);
+
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <span ref={containerRef} className={className} style={style}>
+      {text.split('').map((char, index) => (
+        <span key={index} className="char-fade-in">
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export default function HeroSection() {
   return (
@@ -15,7 +56,7 @@ export default function HeroSection() {
         transition={{ duration: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
       >
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat hero-bg-zoom"
           style={{
             backgroundImage: "url('/hero-background.jpg')",
           }}
@@ -24,7 +65,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0044CC]/90 via-[#0044CC]/70 to-[#0044CC]/50" />
       </motion.div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 text-center py-12 sm:py-16 md:py-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12 text-center py-12 sm:py-16 md:py-20">
         {/* SEO用のh1タグ（視覚的には非表示） */}
         <h1 className="sr-only">株式会社ゼゼヒヒ | 不動産集客支援・広告業・各種代理店</h1>
         
@@ -56,8 +97,8 @@ export default function HeroSection() {
           className="max-w-4xl mx-auto space-y-8 sm:space-y-10 md:space-y-12 mt-20 sm:mt-24 md:mt-28"
         >
           {/* メインコピー（是々非々） */}
-          <motion.p
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold"
+          <div
+            className="text-white font-bold block"
             style={{
               fontFamily: "'Noto Serif JP', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS PMincho', serif",
               fontWeight: 700,
@@ -65,39 +106,24 @@ export default function HeroSection() {
               textShadow: "0 4px 30px rgba(0, 0, 0, 0.6), 0 2px 10px rgba(0, 0, 0, 0.4)",
               letterSpacing: "0.05em",
               textAlign: "center",
-            }}
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ 
-              duration: 1.2, 
-              delay: 1.8, 
-              ease: [0.25, 0.1, 0.25, 1]
+              fontSize: "clamp(1.5rem, 4vw, 3rem)",
             }}
           >
-            <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 2.0, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              「良いものは良い、悪いものは悪い」
-            </motion.span>
+            <CharFadeInText
+              text="「良いものは良い、悪いものは悪い」"
+              delay={1.8}
+            />
             <br />
-            <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 2.2, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              というシンプルな考え方である
-            </motion.span>
+            <CharFadeInText
+              text="というシンプルな考え方である"
+              delay={2.2}
+            />
             <br />
-            <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 2.4, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              「是々非々」という言葉。
-            </motion.span>
-          </motion.p>
+            <CharFadeInText
+              text="「是々非々」という言葉。"
+              delay={2.4}
+            />
+          </div>
           {/* 本文 */}
           <motion.p
             className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 font-normal"

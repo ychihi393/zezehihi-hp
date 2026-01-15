@@ -60,7 +60,55 @@ body {
 /* Glassmorphism効果 */
 .glass {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* スクロール時のフェードインアニメーション用クラス */
+.fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 背景画像のズームインアニメーション */
+@keyframes zoomIn {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.hero-bg-zoom {
+  animation: zoomIn 10s ease-out forwards;
+}
+
+/* 文字の一文字ずつフェードイン用 */
+.char-fade-in {
+  opacity: 0;
+  display: inline-block;
+}
+
+.char-fade-in.visible {
+  opacity: 1;
+  animation: fadeInChar 0.6s ease-out forwards;
+}
+
+@keyframes fadeInChar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
