@@ -45,7 +45,7 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
           ? "bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm" 
-          : "bg-white/90 backdrop-blur-md"
+          : "bg-transparent"
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -66,7 +66,9 @@ export default function Header() {
                 alt="ゼゼヒヒ"
                 width={200}
                 height={80}
-                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
+                className={`h-10 sm:h-12 md:h-14 w-auto object-contain transition-all duration-300 ${
+                  scrolled ? "" : "brightness-0 invert"
+                }`}
                 priority
               />
             </motion.div>
@@ -78,20 +80,28 @@ export default function Header() {
               <motion.button
                 key={item.name}
                 onClick={() => handleNavClick(item.href)}
-                className="text-gray-700 hover:text-gray-900 transition-colors text-sm font-medium tracking-wide relative group"
+                className={`transition-colors text-sm font-medium tracking-wide relative group ${
+                  scrolled 
+                    ? "text-gray-700 hover:text-gray-900" 
+                    : "text-white hover:text-white/80"
+                }`}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 {item.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+                <span className={`absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
+                  scrolled ? "bg-gray-900" : "bg-white"
+                }`}></span>
               </motion.button>
             ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-gray-700"
+            className={`md:hidden p-2 transition-colors ${
+              scrolled ? "text-gray-700" : "text-white"
+            }`}
             onClick={() => setIsOpen(!isOpen)}
             aria-label="メニュー"
           >

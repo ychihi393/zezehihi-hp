@@ -5,7 +5,7 @@ import ZezehihiLogoAnimated from "./ZezehihiLogoAnimated";
 
 export default function HeroSection() {
   return (
-    <section id="top" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+    <section id="top" className="relative min-h-screen flex items-center justify-center pt-16 sm:pt-20 overflow-hidden">
       {/* 背景画像 */}
       <motion.div 
         className="absolute inset-0 w-full h-full"
@@ -19,17 +19,17 @@ export default function HeroSection() {
             backgroundImage: "url('/hero-background.jpg')",
           }}
         />
-        {/* 青い透過オーバーレイ（グラデーション） */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0000FF]/75 via-[#0000FF]/70 to-[#0000FF]/80" />
+        {/* 濃い青から透明へのグラデーションオーバーレイ */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#000033]/90 via-[#000033]/70 to-[#000033]/50" />
       </motion.div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 text-center py-12 sm:py-16 md:py-20">
         {/* SEO用のh1タグ（視覚的には非表示） */}
         <h1 className="sr-only">株式会社ゼゼヒヒ | 不動産集客支援・広告業・各種代理店</h1>
         
         {/* メインロゴ - GSAPアニメーション版 */}
         <motion.div
-          className="relative mb-12 flex justify-center items-center"
+          className="relative mb-20 sm:mb-24 md:mb-28 flex justify-center items-center"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ 
@@ -52,15 +52,18 @@ export default function HeroSection() {
             delay: 1.5,
             ease: [0.25, 0.1, 0.25, 1]
           }}
-          className="max-w-4xl mx-auto space-y-6 mt-16 sm:mt-20"
+          className="max-w-4xl mx-auto space-y-8 sm:space-y-10 md:space-y-12 mt-20 sm:mt-24 md:mt-28"
         >
+          {/* メインコピー（是々非々） */}
           <motion.p
-            className="text-base sm:text-lg md:text-xl text-white font-light tracking-wider"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold"
             style={{
               fontFamily: "'Noto Serif JP', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS PMincho', serif",
-              lineHeight: 1.6,
-              textShadow: "0 2px 20px rgba(0, 0, 0, 0.4)",
+              fontWeight: 700,
+              lineHeight: 1.8,
+              textShadow: "0 4px 30px rgba(0, 0, 0, 0.6), 0 2px 10px rgba(0, 0, 0, 0.4)",
               letterSpacing: "0.05em",
+              textAlign: "center",
             }}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -94,13 +97,16 @@ export default function HeroSection() {
               「是々非々」という言葉。
             </motion.span>
           </motion.p>
+          {/* 本文 */}
           <motion.p
-            className="text-sm sm:text-base md:text-lg text-white/95 font-light tracking-wider"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 font-normal"
             style={{
-              fontFamily: "'Noto Serif JP', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS PMincho', serif",
-              lineHeight: 1.6,
-              textShadow: "0 2px 15px rgba(0, 0, 0, 0.3)",
+              fontFamily: "'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif",
+              fontWeight: 400,
+              lineHeight: 2.1,
+              textShadow: "0 2px 20px rgba(0, 0, 0, 0.5), 0 1px 5px rgba(0, 0, 0, 0.3)",
               letterSpacing: "0.05em",
+              textAlign: "center",
             }}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
