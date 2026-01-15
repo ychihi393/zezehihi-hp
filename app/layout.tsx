@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   authors: [{ name: "株式会社ゼゼヒヒ" }],
   creator: "株式会社ゼゼヒヒ",
   publisher: "株式会社ゼゼヒヒ",
+  applicationName: "株式会社ゼゼヒヒ",
   formatDetection: {
     email: false,
     address: false,
