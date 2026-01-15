@@ -13,23 +13,18 @@ export default function CompanySection() {
   ];
 
   return (
-    <section id="company" className="relative py-40 bg-gray-50 overflow-hidden">
-      {/* 背景装飾 */}
-      <div className="absolute top-0 right-0 w-full h-full opacity-30">
-        <div className="absolute top-1/3 right-0 w-96 h-96 bg-gradient-to-l from-blue-100/70 to-transparent rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+    <section id="company" className="relative py-20 sm:py-24 md:py-32 lg:py-40 bg-white overflow-hidden">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-16 sm:mb-20 md:mb-24"
         >
           <motion.h2
-            className="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1f2937] mb-6 tracking-tight"
+            style={{ fontFamily: "'Noto Serif JP', serif" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -38,7 +33,8 @@ export default function CompanySection() {
             会社概要
           </motion.h2>
           <motion.p
-            className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto font-light tracking-wide"
+            className="text-base sm:text-lg md:text-xl text-[#6b7280] max-w-3xl mx-auto font-normal tracking-wide"
+            style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -49,41 +45,45 @@ export default function CompanySection() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 50, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          className="max-w-5xl mx-auto"
+          className="max-w-4xl mx-auto"
         >
-          <div className="bg-white rounded-2xl overflow-hidden border-2 border-blue-200 shadow-xl">
-            <table className="w-full">
-              <tbody>
-                {companyInfo.map((info, index) => (
-                  <motion.tr
-                    key={info.label}
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.3 + index * 0.1,
-                      ease: [0.25, 0.1, 0.25, 1]
-                    }}
-                    className={`border-b border-gray-200 hover:bg-gray-50 transition-colors duration-300 ${
-                      index === companyInfo.length - 1 ? "border-b-0" : ""
-                    }`}
+          <dl className="bg-white rounded-xl overflow-hidden">
+            {companyInfo.map((info, index) => (
+              <motion.div
+                key={info.label}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.3 + index * 0.1,
+                  ease: [0.25, 0.1, 0.25, 1]
+                }}
+                className={`py-6 sm:py-8 border-b border-[#e5e7eb] last:border-b-0 ${
+                  index % 2 === 0 ? "bg-white" : "bg-[#f9fafb]"
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 px-6 sm:px-8">
+                  <dt 
+                    className="text-base sm:text-lg font-bold text-[#1f2937] min-w-[140px] sm:min-w-[180px]"
+                    style={{ fontFamily: "'Noto Serif JP', serif" }}
                   >
-                    <th className="px-8 lg:px-12 py-6 text-left text-base font-bold text-gray-900 bg-gradient-to-r from-blue-50 to-blue-100/50 w-1/3 tracking-tight">
-                      {info.label}
-                    </th>
-                    <td className="px-8 lg:px-12 py-6 text-base text-gray-800 font-light bg-white">
-                      {info.value}
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    {info.label}
+                  </dt>
+                  <dd 
+                    className="text-base sm:text-lg text-[#6b7280] font-normal flex-1"
+                    style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
+                  >
+                    {info.value}
+                  </dd>
+                </div>
+              </motion.div>
+            ))}
+          </dl>
         </motion.div>
       </div>
     </section>

@@ -28,24 +28,18 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="py-40 bg-white relative overflow-hidden">
-      {/* 背景装飾 */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-40">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-purple-100/50 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+    <section id="services" className="py-20 sm:py-24 md:py-32 lg:py-40 bg-[#f5f7fa] relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-16 sm:mb-20 md:mb-24"
         >
           <motion.h2
-            className="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1f2937] mb-6 tracking-tight"
+            style={{ fontFamily: "'Noto Serif JP', serif" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -54,7 +48,8 @@ export default function ServicesSection() {
             事業内容
           </motion.h2>
           <motion.p
-            className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto font-light tracking-wide"
+            className="text-base sm:text-lg md:text-xl text-[#6b7280] max-w-3xl mx-auto font-normal tracking-wide"
+            style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -64,7 +59,7 @@ export default function ServicesSection() {
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
@@ -78,19 +73,22 @@ export default function ServicesSection() {
                   delay: index * 0.15,
                   ease: [0.25, 0.1, 0.25, 1]
                 }}
-                whileHover={{ y: -12, scale: 1.03 }}
-                className="group relative p-10 lg:p-12 rounded-2xl border-2 border-blue-100 bg-white transition-all duration-500 hover:border-blue-300 hover:bg-blue-50/30 shadow-md hover:shadow-2xl"
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="group relative bg-white rounded-xl p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300"
               >
-                {/* 光沢効果 */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                <div className="relative inline-flex p-5 rounded-xl mb-8 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 group-hover:from-blue-100 group-hover:to-blue-200 transition-all duration-300">
-                  <Icon className="w-8 h-8 text-blue-700" />
+                <div className="relative inline-flex p-4 rounded-lg mb-6 bg-[#0044CC]/10 group-hover:bg-[#0044CC]/20 transition-colors duration-300">
+                  <Icon className="w-7 h-7 text-[#0044CC]" />
                 </div>
-                <h3 className="relative text-xl sm:text-2xl font-bold mb-4 tracking-tight text-gray-900">
+                <h3 
+                  className="relative text-xl sm:text-2xl font-bold mb-4 tracking-tight text-[#1f2937]"
+                  style={{ fontFamily: "'Noto Serif JP', serif" }}
+                >
                   {service.title}
                 </h3>
-                <p className="relative text-gray-700 leading-relaxed text-sm sm:text-base font-light">
+                <p 
+                  className="relative text-[#6b7280] leading-relaxed text-sm sm:text-base font-normal"
+                  style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
+                >
                   {service.description}
                 </p>
               </motion.div>

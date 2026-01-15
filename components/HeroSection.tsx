@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import ZezehihiLogoAnimated from "./ZezehihiLogoAnimated";
 
 export default function HeroSection() {
@@ -20,7 +21,7 @@ export default function HeroSection() {
           }}
         />
         {/* 濃い青から透明へのグラデーションオーバーレイ */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#000033]/90 via-[#000033]/70 to-[#000033]/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0044CC]/90 via-[#0044CC]/70 to-[#0044CC]/50" />
       </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 text-center py-12 sm:py-16 md:py-20">
@@ -142,6 +143,37 @@ export default function HeroSection() {
           </motion.p>
         </motion.div>
       </div>
+
+      {/* Scroll Downアニメーション */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 3.5 }}
+      >
+        <motion.a
+          href="#services"
+          className="flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors cursor-pointer"
+          animate={{ y: [0, 10, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            const element = document.getElementById("services");
+            if (element) {
+              element.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+        >
+          <span className="text-sm font-medium tracking-wider" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            Scroll Down
+          </span>
+          <ChevronDown className="w-6 h-6" />
+        </motion.a>
+      </motion.div>
     </section>
   );
 }

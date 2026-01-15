@@ -1,29 +1,22 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function ContactSection() {
-
   return (
-    <section id="contact" className="relative py-40 bg-gray-50 overflow-hidden">
-      {/* 背景装飾 */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-30">
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-l from-orange-100/70 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-gradient-to-r from-blue-100/70 to-transparent rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+    <section id="contact" className="relative py-20 sm:py-24 md:py-32 lg:py-40 bg-white overflow-hidden">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-16 sm:mb-20 md:mb-24"
         >
           <motion.h2
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1f2937] mb-6 tracking-tight"
+            style={{ fontFamily: "'Noto Serif JP', serif" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -32,7 +25,8 @@ export default function ContactSection() {
             お問い合わせ
           </motion.h2>
           <motion.p
-            className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto font-light tracking-wide"
+            className="text-base sm:text-lg md:text-xl text-[#6b7280] max-w-3xl mx-auto font-normal tracking-wide"
+            style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -42,22 +36,23 @@ export default function ContactSection() {
           </motion.p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-            className="bg-white rounded-2xl p-12 lg:p-16 border-2 border-gray-200 text-center shadow-xl"
+            className="text-center"
           >
             <motion.a
               href="/contact"
-              whileHover={{ scale: 1.05, y: -4 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold text-xl py-6 px-16 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl"
+              className="group inline-flex items-center justify-center gap-3 bg-[#0044CC] hover:bg-[#003399] text-white font-bold text-lg sm:text-xl py-5 sm:py-6 px-12 sm:px-16 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              <Send className="w-7 h-7" />
-              お問い合わせフォームへ
+              <span>お問い合わせフォームへ</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </motion.a>
           </motion.div>
         </div>
