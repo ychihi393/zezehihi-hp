@@ -22,10 +22,8 @@ export default function ZezehihiLogoAnimated({
   const hihi1BottomRef = useRef<SVGGElement>(null);
   const hihi2TopRef = useRef<SVGGElement>(null);
   const hihi2BottomRef = useRef<SVGGElement>(null);
-  const slashRef = useRef<SVGGElement>(null);
-  const flashRef = useRef<SVGRectElement>(null);
+  const slashRef = useRef<SVGLineElement>(null);
   const zezehihiTextRef = useRef<SVGTextElement>(null);
-  const impactGroupRef = useRef<SVGGElement>(null);
 
   useGSAP(
     () => {
@@ -37,11 +35,15 @@ export default function ZezehihiLogoAnimated({
         },
       });
 
+      // GPU最適化設定
+      gsap.config({ force3D: true });
+
       // 初期状態設定
       gsap.set([zeze1Ref.current, zeze2Ref.current], {
         scale: 0.8,
         opacity: 0,
         transformOrigin: "center center",
+        force3D: true,
       });
 
       gsap.set(zezehihiTextRef.current, {
@@ -55,14 +57,11 @@ export default function ZezehihiLogoAnimated({
 
       gsap.set([hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current], {
         opacity: 0,
+        transformOrigin: "center center",
+        force3D: true,
       });
 
       gsap.set(slashRef.current, {
-        x: -800,
-        opacity: 0,
-      });
-
-      gsap.set(flashRef.current, {
         opacity: 0,
       });
 
@@ -99,28 +98,34 @@ export default function ZezehihiLogoAnimated({
       );
 
       // 少し待つ
-      tl.to({}, { duration: 0.3 });
+      tl.to({}, { duration: 0.5 });
 
-      // 閃光が左から飛んでくる
+      // ==========================================
+      // 日本刀の斬撃アニメーション（左上から右下へ）
+      // ==========================================
+
+      // 斬撃ライン出現（極めて速い）
       tl.to(slashRef.current, {
         opacity: 1,
-        duration: 0.1,
-        ease: "power1.out",
-      })
-      .to(slashRef.current, {
-        x: 1200,
-        duration: 0.5,
-        ease: "power1.inOut",
-      }, "-=0.05");
+        duration: 0.15,
+        ease: "power4.out",
+      });
 
-      // 完全版のヒヒを非表示にして、分割版を表示（閃光がヒヒに当たった瞬間）
+      // 斬撃ラインのフェードアウト
+      tl.to(slashRef.current, {
+        opacity: 0,
+        duration: 0.1,
+        ease: "power2.out",
+      }, "+=0.15");
+
+      // 完全版のヒヒを非表示にして、分割版を表示（斬撃直後）
       tl.to(
         [hihi1FullRef.current, hihi2FullRef.current],
         {
           opacity: 0,
           duration: 0.02,
         },
-        "-=0.28"
+        "-=0.15"
       );
 
       tl.to(
@@ -132,120 +137,68 @@ export default function ZezehihiLogoAnimated({
         "-=0.02"
       );
 
-      // ゼゼの反応アニメーション（閃光がヒヒを切る瞬間 - 同時）
+      // ==========================================
+      // 切断と落下（Split & Drop）
+      // ==========================================
+
+      // 上半分の落下（左に回転しながら落下）
       tl.to(
-        [zeze1Ref.current, zeze2Ref.current],
+        [hihi1TopRef.current, hihi2TopRef.current],
         {
-          rotation: -5,
-          y: -8,
-          scale: 1.05,
-          duration: 0.15,
-          ease: "power2.out",
+          y: 400,
+          x: -80,
+          rotation: -35,
+          opacity: 0.3,
+          duration: 1.2,
+          ease: "power2.in",
         },
         "-=0.02"
-      )
-      .to(
-        [zeze1Ref.current, zeze2Ref.current],
+      );
+
+      // 下半分の落下（右に回転しながら落下）
+      tl.to(
+        [hihi1BottomRef.current, hihi2BottomRef.current],
         {
+          y: 450,
+          x: 60,
+          rotation: 25,
+          opacity: 0.2,
+          duration: 1.3,
+          ease: "power2.in",
+        },
+        "-=1.2"
+      );
+
+      // 待機時間
+      tl.to({}, { duration: 0.5 });
+
+      // ==========================================
+      // 復元（Restore）- 磁石のように吸い寄せられる
+      // ==========================================
+
+      // 上半分の復元
+      tl.to(
+        [hihi1TopRef.current, hihi2TopRef.current],
+        {
+          y: 0,
+          x: 0,
           rotation: 0,
-          y: 0,
-          scale: 1,
-          duration: 0.3,
-          ease: "elastic.out(1, 0.5)",
-        }
-      );
-
-      // 切断の瞬間のエフェクト（衝撃波とパーティクル - 同時）
-      if (impactGroupRef.current) {
-        const circles = impactGroupRef.current.querySelectorAll("circle.shockwave");
-        const particles = impactGroupRef.current.querySelectorAll("circle.particle");
-
-        // 衝撃波アニメーション
-        if (circles.length > 0) {
-          tl.to(circles, {
-            attr: { r: (i) => 40 + i * 30 },
-            opacity: 0.8,
-            duration: 0.35,
-            stagger: 0.05,
-            ease: "power2.out",
-          }, "-=0.47")
-          .to(circles, {
-            opacity: 0,
-            duration: 0.25,
-            stagger: 0.05,
-            ease: "power1.out",
-          }, "-=0.15");
-        }
-
-        // パーティクルが飛び散る
-        if (particles.length > 0) {
-          tl.to(particles, {
-            x: (i) => {
-              const angle = (i * 15) * (Math.PI / 180);
-              return Math.cos(angle) * (60 + Math.random() * 40);
-            },
-            y: (i) => {
-              const angle = (i * 15) * (Math.PI / 180);
-              return Math.sin(angle) * (50 + Math.random() * 40);
-            },
-            opacity: 1,
-            scale: 1.5,
-            duration: 0.35,
-            stagger: 0.015,
-            ease: "power2.out",
-          }, "-=0.67")
-          .to(particles, {
-            opacity: 0,
-            scale: 0,
-            duration: 0.25,
-            stagger: 0.015,
-            ease: "power2.in",
-          }, "-=0.15");
-        }
-      }
-
-      // ヒヒが横に切れて分離する（パカッと分かれる - 同時）
-      // 上半分は上に移動
-      tl.to(
-        [hihi1TopRef.current, hihi2TopRef.current],
-        {
-          y: -40,
-          duration: 0.5,
-          ease: "power2.out",
-        },
-        "-=0.87"
-      );
-
-      // 下半分は下に移動
-      tl.to(
-        [hihi1BottomRef.current, hihi2BottomRef.current],
-        {
-          y: 40,
-          duration: 0.5,
-          ease: "power2.out",
-        },
-        "-=0.5"
-      );
-
-      // 少し待つ
-      tl.to({}, { duration: 0.8 });
-
-      // ヒヒが元の位置に戻る（ふわっとスムーズに）
-      tl.to(
-        [hihi1TopRef.current, hihi2TopRef.current],
-        {
-          y: 0,
+          opacity: 1,
           duration: 0.8,
-          ease: "power2.inOut",
+          ease: "back.out(1.7)",
         }
       );
 
+      // 下半分の復元
       tl.to(
         [hihi1BottomRef.current, hihi2BottomRef.current],
         {
           y: 0,
+          x: 0,
+          rotation: 0,
+          opacity: 1,
           duration: 0.8,
-          ease: "power2.inOut",
+          ease: "back.out(1.7)",
         },
         "-=0.8"
       );
@@ -269,16 +222,10 @@ export default function ZezehihiLogoAnimated({
         "-=0.2"
       );
 
-      // 閃光を消す（ゆっくりフェードアウト）
-      tl.to(
-        slashRef.current,
-        {
-          opacity: 0,
-          duration: 0.6,
-          ease: "power1.out",
-        },
-        "-=1.0"
-      );
+      // 斬撃ラインを初期位置にリセット
+      tl.set(slashRef.current, {
+        opacity: 0,
+      });
     },
     { scope: containerRef }
   );
@@ -302,25 +249,25 @@ export default function ZezehihiLogoAnimated({
           </feMerge>
         </filter>
 
-        {/* 横の切断線用のクリップパス */}
-        {/* ヒヒ1（左）上半分 - 横に切る */}
+        {/* 斜めの切断線用のクリップパス（左上から右下への斬撃） */}
+        {/* ヒヒ1（左）上半分 - 斜めに切る */}
         <clipPath id="hihi1TopClip">
-          <rect x="400" y="130" width="200" height="105" />
+          <polygon points="400,130 600,130 600,200 400,150" />
         </clipPath>
 
-        {/* ヒヒ1（左）下半分 - 横に切る */}
+        {/* ヒヒ1（左）下半分 - 斜めに切る */}
         <clipPath id="hihi1BottomClip">
-          <rect x="400" y="235" width="200" height="145" />
+          <polygon points="400,150 600,200 600,380 400,380" />
         </clipPath>
 
-        {/* ヒヒ2（右）上半分 - 横に切る */}
+        {/* ヒヒ2（右）上半分 - 斜めに切る */}
         <clipPath id="hihi2TopClip">
-          <rect x="560" y="130" width="220" height="105" />
+          <polygon points="560,130 780,130 780,240 560,190" />
         </clipPath>
 
-        {/* ヒヒ2（右）下半分 - 横に切る */}
+        {/* ヒヒ2（右）下半分 - 斜めに切る */}
         <clipPath id="hihi2BottomClip">
-          <rect x="560" y="235" width="220" height="145" />
+          <polygon points="560,190 780,240 780,380 560,380" />
         </clipPath>
       </defs>
 
@@ -451,81 +398,22 @@ export default function ZezehihiLogoAnimated({
         </text>
       </g>
 
-      {/* 閃光（横から飛んでくる） */}
-      <g ref={slashRef} opacity="0">
-        {/* 外側の大きな青い光 */}
-        <rect
-          x="-50"
-          y="210"
-          width="100"
-          height="50"
-          fill="#00BFFF"
-          filter="url(#glow)"
-          opacity="0.3"
-        />
-        {/* 中間の明るい青 */}
-        <rect
-          x="-30"
-          y="220"
-          width="60"
-          height="30"
-          fill="#87CEEB"
-          filter="url(#glow)"
-          opacity="0.6"
-        />
-        {/* 中心の白い光（細長い閃光） */}
-        <rect
-          x="-20"
-          y="230"
-          width="40"
-          height="10"
-          fill="#FFFFFF"
-          filter="url(#glow)"
-        />
-      </g>
-
-      {/* フラッシュエフェクト */}
-      <rect
-        ref={flashRef}
-        x="0"
-        y="0"
-        width="800"
-        height="400"
-        fill="white"
+      {/* 斬撃ライン（左上から右下への鋭い閃光） */}
+      <line
+        ref={slashRef}
+        x1="350"
+        y1="50"
+        x2="750"
+        y2="350"
+        stroke="white"
+        strokeWidth="4"
+        strokeLinecap="round"
         opacity="0"
+        filter="url(#glow)"
+        style={{
+          filter: "drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.4))",
+        }}
       />
-
-      {/* 切断の瞬間の演出エフェクト */}
-      <g ref={impactGroupRef} opacity="1">
-        {/* 衝撃波（複数の同心円） */}
-        {[...Array(4)].map((_, i) => (
-          <circle
-            key={`shockwave-${i}`}
-            className="shockwave"
-            cx="500"
-            cy="235"
-            r="0"
-            fill="none"
-            stroke="#87CEEB"
-            strokeWidth="3"
-            opacity="0"
-            filter="url(#glow)"
-          />
-        ))}
-        {/* パーティクル（切れた瞬間の破片） */}
-        {[...Array(24)].map((_, i) => (
-          <circle
-            key={`particle-${i}`}
-            className="particle"
-            cx="500"
-            cy="235"
-            r={2 + Math.random() * 3}
-            fill="#FFFFFF"
-            opacity="0"
-            filter="url(#glow)"
-          />
-        ))}
-      </g>
 
       {/* ZEZEHIHI */}
       <text
