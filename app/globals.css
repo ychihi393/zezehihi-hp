@@ -30,6 +30,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* スクロールロック（オープニング演出用） */
+html.scroll-locked,
+body.scroll-locked {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

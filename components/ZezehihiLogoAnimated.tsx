@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -14,9 +14,11 @@ export default function ZezehihiLogoAnimated({
   onAnimationComplete,
 }: ZezehihiLogoAnimatedProps) {
   // ===========================================
-  // State: アニメーション発火フラグ
+  // State
   // ===========================================
   const [animationTriggered, setAnimationTriggered] = useState(false);
+  const [isArmed, setIsArmed] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   // ===========================================
   // Refs for all animated elements
@@ -41,36 +43,63 @@ export default function ZezehihiLogoAnimated({
   const zezehihiTextRef = useRef<SVGTextElement>(null);
 
   // ===========================================
-  // 初期状態設定：完全なロゴを表示
+  // Helpers
   // ===========================================
-  useEffect(() => {
-    // 初期状態で完全なロゴを表示
-    if (zeze1Ref.current && zeze2Ref.current && zezehihiTextRef.current) {
-      gsap.set([zeze1Ref.current, zeze2Ref.current], {
-        scale: 1,
-        opacity: 1,
-      });
-      gsap.set(zezehihiTextRef.current, {
+  const applyInitialState = useCallback(() => {
+    // ロゴは「切れる前の完全体」を表示
+    gsap.set([zeze1Ref.current, zeze2Ref.current], {
+      scale: 1,
+      opacity: 1,
+    });
+    gsap.set(zezehihiTextRef.current, {
+      y: 0,
+      opacity: 1,
+    });
+
+    // 完全版（ヒヒ）を表示
+    gsap.set([hihi1FullRef.current, hihi2FullRef.current], {
+      opacity: 1,
+    });
+
+    // 分割版（ヒヒ）は非表示＆位置/回転を初期化
+    gsap.set(
+      [hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current],
+      {
+        opacity: 0,
+        x: 0,
         y: 0,
-        opacity: 1,
-      });
-    }
-    if (hihi1FullRef.current && hihi2FullRef.current) {
-      gsap.set([hihi1FullRef.current, hihi2FullRef.current], {
-        opacity: 1,
-      });
+        rotation: 0,
+      }
+    );
+
+    // VFX初期化
+    gsap.set(kienzanRef.current, { x: 0, y: 0, opacity: 0 });
+    if (impactWavesRef.current) {
+      const shockwaves = impactWavesRef.current.querySelectorAll(".shockwave");
+      gsap.set(shockwaves, { attr: { r: 0 }, opacity: 0 });
     }
   }, []);
 
   // ===========================================
-  // スクロールロックとトリガーイベント監視
+  // Page Load: 初期表示は完全体
   // ===========================================
   useEffect(() => {
+    applyInitialState();
+  }, [applyInitialState]);
+
+  // ===========================================
+  // Trigger: 「スクロールしようとした瞬間」に発火（armedのときだけ）
+  // ===========================================
+  useEffect(() => {
+    if (!isArmed) return;
+
     // 初期状態でスクロールをロック
-    document.body.style.overflow = 'hidden';
+    document.documentElement.classList.add("scroll-locked");
+    document.body.classList.add("scroll-locked");
 
     const triggerAnimation = () => {
       setAnimationTriggered(true);
+      setIsArmed(false);
     };
 
     const handleWheel = () => triggerAnimation();
@@ -84,15 +113,47 @@ export default function ZezehihiLogoAnimated({
     };
 
     // イベントリスナー登録（once: trueで一度だけ発火）
-    window.addEventListener('wheel', handleWheel, { once: true, passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { once: true, passive: true });
-    window.addEventListener('keydown', handleKeyDown, { once: true });
+    window.addEventListener("wheel", handleWheel, { once: true, passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { once: true, passive: true });
+    window.addEventListener("keydown", handleKeyDown, { once: true });
 
     // クリーンアップ関数
     return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isArmed]);
+
+  // ===========================================
+  // Reset on Top: ユーザーが最上部(0)に戻ったら、こっそり初期化して再装填
+  // ===========================================
+  useEffect(() => {
+    if (!isCompleted) return;
+
+    const onScroll = () => {
+      if (window.scrollY <= 0) {
+        // 1) 見た目を完全体に戻す
+        applyInitialState();
+
+        // 2) 状態をリセットして再装填
+        setIsCompleted(false);
+        setAnimationTriggered(false);
+        setIsArmed(true);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [applyInitialState, isCompleted]);
+
+  // ===========================================
+  // Unmount safety: 画面遷移等でスクロールロックが残らないように
+  // ===========================================
+  useEffect(() => {
+    return () => {
+      document.documentElement.classList.remove("scroll-locked");
+      document.body.classList.remove("scroll-locked");
     };
   }, []);
 
@@ -101,10 +162,25 @@ export default function ZezehihiLogoAnimated({
       // アニメーションが発火されるまで実行しない
       if (!animationTriggered || !containerRef.current) return;
 
+      // 再生前に「完全体」へ揃える（念のため）
+      applyInitialState();
+
       const tl = gsap.timeline({
         onComplete: () => {
-          // アニメーション完了後、スクロールロックを解除
-          document.body.style.overflow = 'auto';
+          // 1) スクロールロック解除
+          document.documentElement.classList.remove("scroll-locked");
+          document.body.classList.remove("scroll-locked");
+
+          // 2) 少し下へオートスクロール（誘導）
+          //    画面の 25% だけ下にスムーズスクロール（次のコンテンツが見える程度）
+          const y = Math.round(window.innerHeight * 0.25);
+          window.requestAnimationFrame(() => {
+            window.scrollTo({ top: y, behavior: "smooth" });
+          });
+
+          // 3) 「完了」状態へ（トップに戻った時だけ再装填）
+          setIsCompleted(true);
+
           onAnimationComplete?.();
         },
       });
@@ -266,56 +342,12 @@ export default function ZezehihiLogoAnimated({
       // ===========================================
       // フェーズ4: 待機時間
       // ===========================================
-      tl.to({}, { duration: 1.2 });
-
-      // ===========================================
-      // フェーズ5: 復元（Restore）- 維持
-      // ===========================================
-
-      // 上半分が磁力で吸い寄せられるように元に戻る
-      tl.to([hihi1TopRef.current, hihi2TopRef.current], {
-        y: 0,
-        x: 0,
-        rotation: 0,
-        opacity: 1,
-        duration: 0.9,
-        ease: "back.out(1.7)",
-      });
-
-      // 下半分も完全に静止
-      tl.to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: 0,
-        y: 0,
-        duration: 0.9,
-        ease: "back.out(1.7)",
-      }, '-=0.9');
-
-      // 分割版を非表示
-      tl.to([hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current], {
-        opacity: 0,
-        duration: 0.2,
-      }, '-=0.2');
-
-      // 完全版を再表示
-      tl.to([hihi1FullRef.current, hihi2FullRef.current], {
-        opacity: 1,
-        duration: 0.2,
-      }, '-=0.2');
-
-      // 気円斬をリセット（初期位置に戻す）
-      tl.set(kienzanRef.current, {
-        x: 0,
-        y: 0,
-        opacity: 0,
-      });
-
-      // 衝撃波をリセット
+      // 変更仕様: 「元の形に戻る」は削除し、崩れ落ちた状態で停止して維持する
+      // VFXだけリセットして終了（見た目は「切れて崩れ落ちたまま」）
+      tl.set(kienzanRef.current, { x: 0, y: 0, opacity: 0 });
       if (impactWavesRef.current) {
-        const shockwaves = impactWavesRef.current.querySelectorAll('.shockwave');
-        tl.set(shockwaves, {
-          attr: { r: 0 },
-          opacity: 0,
-        });
+        const shockwaves = impactWavesRef.current.querySelectorAll(".shockwave");
+        tl.set(shockwaves, { attr: { r: 0 }, opacity: 0 });
       }
     },
     { scope: containerRef, dependencies: [animationTriggered] }
