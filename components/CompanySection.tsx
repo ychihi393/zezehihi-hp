@@ -74,7 +74,6 @@ export default function CompanySection() {
                     {info.value}
                   </dd>
                 </div>
-                </div>
               </ScrollFadeIn>
             ))}
           </dl>
