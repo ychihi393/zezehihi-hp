@@ -30,11 +30,9 @@ export default function ZezehihiLogoAnimated({
   const hihi2TopRef = useRef<SVGGElement>(null);
   const hihi2BottomRef = useRef<SVGGElement>(null);
 
-  // VFX要素
-  const slashBladeRef = useRef<SVGGElement>(null);
-  const slashTrailRef = useRef<SVGGElement>(null);
+  // VFX要素（気円斬スタイル）
+  const kienzanRef = useRef<SVGGElement>(null);
   const impactWavesRef = useRef<SVGGElement>(null);
-  const flashEffectRef = useRef<SVGRectElement>(null);
   const zezehihiTextRef = useRef<SVGTextElement>(null);
 
   useGSAP(
@@ -77,12 +75,13 @@ export default function ZezehihiLogoAnimated({
         force3D: true,
       });
 
-      gsap.set([slashBladeRef.current, slashTrailRef.current], {
+      // 気円斬の初期位置（左上の開始位置）
+      gsap.set(kienzanRef.current, {
+        x: 0,
+        y: 0,
         opacity: 0,
-      });
-
-      gsap.set(flashEffectRef.current, {
-        opacity: 0,
+        transformOrigin: "center center",
+        force3D: true,
       });
 
       // 衝撃波の初期化
@@ -131,45 +130,35 @@ export default function ZezehihiLogoAnimated({
       tl.to({}, { duration: 0.8 });
 
       // ===========================================
-      // フェーズ1: 超高速斬撃（High-Speed Slash）
+      // フェーズ1: 気円斬（Kienzan）- 超高速エネルギーブレード
       // ===========================================
 
-      // 斬撃刃が一瞬で出現
-      tl.to(slashBladeRef.current, {
+      // 気円斬が出現し、弾丸のように突き抜ける
+      tl.to(kienzanRef.current, {
         opacity: 1,
-        duration: 0.08,
+        duration: 0.02,
         ease: "power4.out",
       });
 
-      // 斬撃の光の軌跡（少し遅れて出現し、すぐに消える）
-      tl.to(slashTrailRef.current, {
-        opacity: 1,
-        duration: 0.05,
-        ease: "power4.out",
-      }, '-=0.04');
+      // 左上から右下へ超高速移動（0.1秒で突き抜ける）
+      tl.to(kienzanRef.current, {
+        x: 450,  // 右下方向へ移動
+        y: 300,  // 右下方向へ移動
+        duration: 0.1,
+        ease: "power1.in",
+      }, "-=0.02");
 
-      tl.to(slashTrailRef.current, {
-        opacity: 0,
-        duration: 0.15,
-        ease: "power2.out",
-      }, '+=0.05');
-
-      // ===========================================
-      // フェーズ2: インパクトの瞬間（Impact Moment）
-      // ===========================================
-
-      // 画面全体の閃光（一瞬だけ）
-      tl.to(flashEffectRef.current, {
-        opacity: 0.4,
-        duration: 0.05,
-        ease: "power4.out",
-      }, '-=0.1');
-
-      tl.to(flashEffectRef.current, {
+      // 移動後、残像が少し残ってからフェードアウト
+      tl.to(kienzanRef.current, {
         opacity: 0,
         duration: 0.2,
         ease: "power2.out",
-      });
+      }, "+=0.05");
+
+      // ===========================================
+      // フェーズ2: インパクトの瞬間（Impact Moment）
+      // ※コンテナフラッシュは削除。衝撃波のみ。
+      // ===========================================
 
       // 衝撃波が爆発的に広がる
       if (impactWavesRef.current) {
@@ -177,11 +166,11 @@ export default function ZezehihiLogoAnimated({
 
         tl.to(shockwaves, {
           attr: { r: (i: number) => 80 + (i * 40) },
-          opacity: 0.9,
+          opacity: 0.7,
           duration: 0.4,
           stagger: 0.08,
           ease: "power2.out",
-        }, '-=0.25');
+        }, '-=0.2');
 
         tl.to(shockwaves, {
           opacity: 0,
@@ -192,14 +181,14 @@ export default function ZezehihiLogoAnimated({
       }
 
       // ===========================================
-      // フェーズ3: 切断と物理挙動
+      // フェーズ3: 切断と物理挙動（完璧なので維持）
       // ===========================================
 
       // 完全版のヒヒを非表示にする
       tl.to([hihi1FullRef.current, hihi2FullRef.current], {
         opacity: 0,
         duration: 0.02,
-      }, '-=0.35');
+      }, '-=0.3');
 
       // 分割版を表示
       tl.to([hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current], {
@@ -208,7 +197,7 @@ export default function ZezehihiLogoAnimated({
       }, '-=0.02');
 
       // ----------------------------------------------
-      // 【下半分】激しい振動（その場で固定）
+      // 【下半分】激しい振動（その場で固定）- 完璧なので維持
       // ----------------------------------------------
       const vibrationTL = gsap.timeline();
 
@@ -255,10 +244,10 @@ export default function ZezehihiLogoAnimated({
         ease: "elastic.out(2, 0.3)",
       });
 
-      tl.add(vibrationTL, '-=0.33');
+      tl.add(vibrationTL, '-=0.28');
 
       // ----------------------------------------------
-      // 【上半分】重力による落下（回転しながら）
+      // 【上半分】重力による落下（回転しながら）- 完璧なので維持
       // ----------------------------------------------
       tl.to([hihi1TopRef.current, hihi2TopRef.current], {
         y: 60,
@@ -267,7 +256,7 @@ export default function ZezehihiLogoAnimated({
         opacity: 0.8,
         duration: 0.8,
         ease: "power2.in",
-      }, '-=0.33');
+      }, '-=0.28');
 
       // ===========================================
       // フェーズ4: 待機時間
@@ -275,7 +264,7 @@ export default function ZezehihiLogoAnimated({
       tl.to({}, { duration: 1.2 });
 
       // ===========================================
-      // フェーズ5: 復元（Restore）
+      // フェーズ5: 復元（Restore）- 完璧なので維持
       // ===========================================
 
       // 上半分が磁力で吸い寄せられるように元に戻る
@@ -308,12 +297,12 @@ export default function ZezehihiLogoAnimated({
         duration: 0.2,
       }, '-=0.2');
 
-      // 斬撃エフェクトをリセット
-      tl.to(slashBladeRef.current, {
+      // 気円斬をリセット（初期位置に戻す）
+      tl.set(kienzanRef.current, {
+        x: 0,
+        y: 0,
         opacity: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      }, '-=1.5');
+      });
 
       // 衝撃波をリセット
       if (impactWavesRef.current) {
@@ -340,9 +329,9 @@ export default function ZezehihiLogoAnimated({
       {/* 定義：フィルター、グラデーション、クリップパス */}
       {/* ====================================== */}
       <defs>
-        {/* 発光フィルター（強烈なブルーム効果） */}
-        <filter id="glow-intense">
-          <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+        {/* 気円斬用の強烈な発光フィルター */}
+        <filter id="kienzan-glow">
+          <feGaussianBlur stdDeviation="6" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="coloredBlur" />
@@ -361,16 +350,16 @@ export default function ZezehihiLogoAnimated({
 
         {/* 衝撃波用の放射状グラデーション */}
         <radialGradient id="shockwaveGradient">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-          <stop offset="50%" stopColor="#87CEEB" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="#87CEEB" stopOpacity="0.5" />
           <stop offset="100%" stopColor="#00BFFF" stopOpacity="0" />
         </radialGradient>
 
-        {/* 斬撃刃のグラデーション */}
-        <linearGradient id="bladeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-          <stop offset="50%" stopColor="#87CEEB" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#00BFFF" stopOpacity="0.7" />
+        {/* 気円斬のエッジグラデーション（中心白→エッジ青/黄） */}
+        <linearGradient id="kienzanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFD700" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="#FFFFFF" stopOpacity="1" />
+          <stop offset="100%" stopColor="#87CEEB" stopOpacity="0.6" />
         </linearGradient>
 
         {/* 斜めの切断用クリップパス */}
@@ -511,69 +500,67 @@ export default function ZezehihiLogoAnimated({
       </g>
 
       {/* ====================================== */}
-      {/* VFX: 斬撃刃（3層構造のエネルギーブレード） */}
+      {/* VFX: 気円斬（Kienzan）- 超高密度エネルギーブレード */}
       {/* ====================================== */}
-      <g ref={slashBladeRef} opacity="0">
-        {/* 外側の大きな光のオーラ */}
+      <g ref={kienzanRef} opacity="0">
+        {/* 外側の黄色の輝き（残像効果） */}
         <line
           x1="300" y1="50"
           x2="750" y2="350"
-          stroke="url(#bladeGradient)"
-          strokeWidth="40"
+          stroke="#FFD700"
+          strokeWidth="12"
           strokeLinecap="round"
           opacity="0.3"
+          filter="url(#kienzan-glow)"
           style={{
-            filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 1)) drop-shadow(0 0 30px rgba(135, 206, 235, 0.8)) drop-shadow(0 0 45px rgba(0, 191, 255, 0.6))"
+            filter: "drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 40px rgba(255, 215, 0, 0.5))"
           }}
         />
 
-        {/* 中間層の明るい光 */}
+        {/* 中間層の青白い光 */}
         <line
           x1="300" y1="50"
           x2="750" y2="350"
           stroke="#87CEEB"
-          strokeWidth="20"
+          strokeWidth="6"
           strokeLinecap="round"
           opacity="0.6"
+          filter="url(#kienzan-glow)"
           style={{
-            filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 1)) drop-shadow(0 0 30px rgba(135, 206, 235, 0.8))"
+            filter: "drop-shadow(0 0 15px rgba(135, 206, 235, 0.9)) drop-shadow(0 0 30px rgba(135, 206, 235, 0.6))"
           }}
         />
 
-        {/* コアの鋭い白刃 */}
+        {/* コアの鋭い白い刃（最も強烈） */}
         <line
           x1="300" y1="50"
           x2="750" y2="350"
           stroke="#FFFFFF"
-          strokeWidth="6"
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity="1"
+          filter="url(#kienzan-glow)"
+          style={{
+            filter: "drop-shadow(0 0 12px rgba(255, 255, 255, 1)) drop-shadow(0 0 25px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.5))"
+          }}
+        />
+
+        {/* 最も内側のシャープなエッジ */}
+        <line
+          x1="300" y1="50"
+          x2="750" y2="350"
+          stroke="#FFFFFF"
+          strokeWidth="1"
           strokeLinecap="round"
           opacity="1"
           style={{
-            filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 1))"
+            filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 1))"
           }}
         />
       </g>
 
       {/* ====================================== */}
-      {/* VFX: 斬撃の光の軌跡（トレイル） */}
-      {/* ====================================== */}
-      <g ref={slashTrailRef} opacity="0">
-        <line
-          x1="300" y1="50"
-          x2="750" y2="350"
-          stroke="#FFFFFF"
-          strokeWidth="60"
-          strokeLinecap="round"
-          opacity="0.8"
-          filter="url(#glow-intense)"
-          style={{
-            filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.7))"
-          }}
-        />
-      </g>
-
-      {/* ====================================== */}
-      {/* VFX: インパクト衝撃波 */}
+      {/* VFX: インパクト衝撃波（刃のみ光る） */}
       {/* ====================================== */}
       <g ref={impactWavesRef}>
         <circle
@@ -617,19 +604,6 @@ export default function ZezehihiLogoAnimated({
           opacity="0"
         />
       </g>
-
-      {/* ====================================== */}
-      {/* VFX: フラッシュエフェクト */}
-      {/* ====================================== */}
-      <rect
-        ref={flashEffectRef}
-        x="0"
-        y="0"
-        width="800"
-        height="400"
-        fill="white"
-        opacity="0"
-      />
 
       {/* ====================================== */}
       {/* ZEZEHIHIテキスト */}
