@@ -143,12 +143,12 @@ export default function ZezehihiLogoAnimated({
       //
       // 完全通り抜け（Complete Through-Pass）
       // 画面左上外側から右下外側まで完全に突き抜ける
-      // 移動距離: x=800, y=267 (1000-200=800, 317-50=267)
+      // 移動距離: x=800, y=297 (1000-200=800, 347-80=267)
       // フェードアウトせずに、高速で画面外へ飛び去る
       //
       tl.to(kienzanRef.current, {
         x: 800,   // 右下の外側まで（viewBox外）
-        y: 267,   // 傾き1/3に従った移動
+        y: 297,   // 傾き1/3に従った移動（下げた位置）
         duration: 0.1,
         ease: "power1.in",
       }, "-=0.02");
@@ -205,55 +205,9 @@ export default function ZezehihiLogoAnimated({
       // ===========================================
 
       // ----------------------------------------------
-      // 【下半分】激しい振動（切断の瞬間から即座に）
+      // 【下半分】静止（振動なし）
       // ----------------------------------------------
-      const vibrationTL = gsap.timeline();
-
-      vibrationTL.to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: 3,
-        y: -2,
-        duration: 0.04,
-        ease: "power2.out",
-      })
-      .to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: -3,
-        y: 2,
-        duration: 0.04,
-        ease: "power2.inOut",
-      })
-      .to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: 2,
-        y: -1,
-        duration: 0.04,
-        ease: "power2.inOut",
-      })
-      .to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: -2,
-        y: 1,
-        duration: 0.04,
-        ease: "power2.inOut",
-      })
-      .to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: 1,
-        y: -0.5,
-        duration: 0.04,
-        ease: "power2.inOut",
-      })
-      .to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: -1,
-        y: 0.5,
-        duration: 0.04,
-        ease: "power2.inOut",
-      })
-      .to([hihi1BottomRef.current, hihi2BottomRef.current], {
-        x: 0,
-        y: 0,
-        duration: 0.08,
-        ease: "elastic.out(2, 0.3)",
-      });
-
-      // 振動を切断と同時に開始（"-=0.13"で食い気味）
-      tl.add(vibrationTL, '-=0.13');
+      // 下半分は切断後、完全に静止したまま
 
       // ----------------------------------------------
       // 【上半分】重力による落下（切断と同時に即座に）
@@ -261,11 +215,11 @@ export default function ZezehihiLogoAnimated({
       tl.to([hihi1TopRef.current, hihi2TopRef.current], {
         y: 60,
         x: 15,
-        rotation: 8,
+        rotation: 25,  // 回転を強化（8 → 25）
         opacity: 0.8,
         duration: 0.8,
         ease: "power2.in",
-      }, '-=0.13');  // 振動と同時に落下開始
+      }, '-=0.13');  // 切断と同時に落下開始
 
       // ===========================================
       // フェーズ4: 待機時間
@@ -371,10 +325,10 @@ export default function ZezehihiLogoAnimated({
         【重要】この値を変更すると、斬撃の角度が変わります
 
         斬撃ラインの方程式（より緩やかな角度）:
-        - 始点: (200, 50)   ← 画面左上の外側から開始
-        - 終点: (1000, 317) ← 画面右下の外側まで突き抜ける
-        - 傾き: (317-50)/(1000-200) = 267/800 = 1/3（緩やか）
-        - 方程式: y = (1/3)x - 16.67
+        - 始点: (200, 80)   ← 画面左上の外側から開始
+        - 終点: (1000, 347) ← 画面右下の外側まで突き抜ける
+        - 傾き: (347-80)/(1000-200) = 267/800 = 1/3（緩やか）
+        - 方程式: y = (1/3)x + 13.33
 
         ※傾きを小さくするほど、より水平に近い斬撃になります
         ※現在の傾き 1/3 は、前回の 2/3 の半分（より緩やか）
@@ -386,43 +340,43 @@ export default function ZezehihiLogoAnimated({
         切断ライン座標計算（Complete Through-Pass）
         ====================================
         文字の位置での切断ラインY座標:
-        方程式 y = (1/3)x - 16.67 を使用
+        方程式 y = (1/3)x + 13.33 を使用
 
         ヒヒ1（x=400-600の範囲）:
-          x=400: y = (1/3)*400 - 16.67 = 116.67
-          x=600: y = (1/3)*600 - 16.67 = 183.33
+          x=400: y = (1/3)*400 + 13.33 = 146.67
+          x=600: y = (1/3)*600 + 13.33 = 213.33
 
         ヒヒ2（x=560-780の範囲）:
-          x=560: y = (1/3)*560 - 16.67 = 170
-          x=780: y = (1/3)*780 - 16.67 = 243.33
+          x=560: y = (1/3)*560 + 13.33 = 200
+          x=780: y = (1/3)*780 + 13.33 = 273.33
 
         衝撃波中心（x=500）:
-          y = (1/3)*500 - 16.67 = 150
+          y = (1/3)*500 + 13.33 = 180
         ====================================
         */}
 
         {/* ヒヒ1（1文字目）上半分 - 緩やかな斜め切断ライン上部 */}
         <clipPath id="hihi1TopClip">
-          {/* 方程式 y = (1/3)x - 16.67 に従う */}
-          <polygon points="400,80 600,80 600,183 400,117" />
+          {/* 方程式 y = (1/3)x + 13.33 に従う */}
+          <polygon points="400,80 600,80 600,213 400,147" />
         </clipPath>
 
         {/* ヒヒ1（1文字目）下半分 - 緩やかな斜め切断ライン下部 */}
         <clipPath id="hihi1BottomClip">
-          {/* 方程式 y = (1/3)x - 16.67 に従う */}
-          <polygon points="400,117 600,183 600,380 400,380" />
+          {/* 方程式 y = (1/3)x + 13.33 に従う */}
+          <polygon points="400,147 600,213 600,380 400,380" />
         </clipPath>
 
         {/* ヒヒ2（2文字目）上半分 - 緩やかな斜め切断ライン上部 */}
         <clipPath id="hihi2TopClip">
-          {/* 方程式 y = (1/3)x - 16.67 に従う */}
-          <polygon points="560,80 780,80 780,243 560,170" />
+          {/* 方程式 y = (1/3)x + 13.33 に従う */}
+          <polygon points="560,80 780,80 780,273 560,200" />
         </clipPath>
 
         {/* ヒヒ2（2文字目）下半分 - 緩やかな斜め切断ライン下部 */}
         <clipPath id="hihi2BottomClip">
-          {/* 方程式 y = (1/3)x - 16.67 に従う */}
-          <polygon points="560,170 780,243 780,380 560,380" />
+          {/* 方程式 y = (1/3)x + 13.33 に従う */}
+          <polygon points="560,200 780,273 780,380 560,380" />
         </clipPath>
       </defs>
 
@@ -548,14 +502,14 @@ export default function ZezehihiLogoAnimated({
       {/* ====================================== */}
       {/* VFX: 気円斬（Kienzan）- 超高密度エネルギーブレード */}
       {/* 座標: 画面外から画面外へ完全通り抜け */}
-      {/* 始点: (200, 50) ← 左上外側 */}
-      {/* 終点: (1000, 317) ← 右下外側（viewBox外） */}
+      {/* 始点: (200, 80) ← 左上外側 */}
+      {/* 終点: (1000, 347) ← 右下外側（viewBox外） */}
       {/* ====================================== */}
       <g ref={kienzanRef} opacity="0">
         {/* 外側の黄色の輝き（残像効果） */}
         <line
-          x1="200" y1="50"
-          x2="1000" y2="317"
+          x1="200" y1="80"
+          x2="1000" y2="347"
           stroke="#FFD700"
           strokeWidth="12"
           strokeLinecap="round"
@@ -568,8 +522,8 @@ export default function ZezehihiLogoAnimated({
 
         {/* 中間層の青白い光 */}
         <line
-          x1="200" y1="50"
-          x2="1000" y2="317"
+          x1="200" y1="80"
+          x2="1000" y2="347"
           stroke="#87CEEB"
           strokeWidth="6"
           strokeLinecap="round"
@@ -582,8 +536,8 @@ export default function ZezehihiLogoAnimated({
 
         {/* コアの鋭い白い刃（最も強烈） */}
         <line
-          x1="200" y1="50"
-          x2="1000" y2="317"
+          x1="200" y1="80"
+          x2="1000" y2="347"
           stroke="#FFFFFF"
           strokeWidth="3"
           strokeLinecap="round"
@@ -596,8 +550,8 @@ export default function ZezehihiLogoAnimated({
 
         {/* 最も内側のシャープなエッジ */}
         <line
-          x1="200" y1="50"
-          x2="1000" y2="317"
+          x1="200" y1="80"
+          x2="1000" y2="347"
           stroke="#FFFFFF"
           strokeWidth="1"
           strokeLinecap="round"
@@ -611,13 +565,13 @@ export default function ZezehihiLogoAnimated({
       {/* ====================================== */}
       {/* VFX: インパクト衝撃波 */}
       {/* 中心座標: 斬撃が文字の中央を通過する位置 */}
-      {/* x=500, y = (1/3)*500 - 16.67 = 150 */}
+      {/* x=500, y = (1/3)*500 + 13.33 = 180 */}
       {/* ====================================== */}
       <g ref={impactWavesRef}>
         <circle
           className="shockwave"
           cx="500"
-          cy="150"
+          cy="180"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -627,7 +581,7 @@ export default function ZezehihiLogoAnimated({
         <circle
           className="shockwave"
           cx="500"
-          cy="150"
+          cy="180"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -637,7 +591,7 @@ export default function ZezehihiLogoAnimated({
         <circle
           className="shockwave"
           cx="500"
-          cy="150"
+          cy="180"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -647,7 +601,7 @@ export default function ZezehihiLogoAnimated({
         <circle
           className="shockwave"
           cx="500"
-          cy="150"
+          cy="180"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
