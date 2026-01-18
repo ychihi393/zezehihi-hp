@@ -140,64 +140,61 @@ export default function ZezehihiLogoAnimated({
         ease: "power4.out",
       });
 
-      // 左上から右下へ超高速移動（0.1秒で突き抜ける）
+      // 左上から右下へ超高速移動（0.08秒で突き抜ける）
+      // ※より速く、よりシャープに
       tl.to(kienzanRef.current, {
-        x: 450,  // 右下方向へ移動
-        y: 300,  // 右下方向へ移動
-        duration: 0.1,
+        x: 450,
+        y: 300,
+        duration: 0.08,
         ease: "power1.in",
       }, "-=0.02");
 
-      // 移動後、残像が少し残ってからフェードアウト
-      tl.to(kienzanRef.current, {
+      // ===========================================
+      // タイミングの短縮（Tighter Timing）
+      // 斬撃が文字の中央を通過した瞬間に切断が発生
+      // "-=0.06" で食い気味に反応させる
+      // ===========================================
+
+      // 完全版のヒヒを非表示にする（斬撃の中盤で即座に）
+      tl.to([hihi1FullRef.current, hihi2FullRef.current], {
         opacity: 0,
-        duration: 0.2,
-        ease: "power2.out",
-      }, "+=0.05");
+        duration: 0.01,
+      }, '-=0.06');  // 食い気味に切断
+
+      // 分割版を表示（同時）
+      tl.to([hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current], {
+        opacity: 1,
+        duration: 0.01,
+      }, '-=0.01');
 
       // ===========================================
-      // フェーズ2: インパクトの瞬間（Impact Moment）
-      // ※コンテナフラッシュは削除。衝撃波のみ。
+      // 衝撃波（斬撃と同時多発的に）
       // ===========================================
-
-      // 衝撃波が爆発的に広がる
       if (impactWavesRef.current) {
         const shockwaves = impactWavesRef.current.querySelectorAll('.shockwave');
 
         tl.to(shockwaves, {
           attr: { r: (i: number) => 80 + (i * 40) },
           opacity: 0.7,
-          duration: 0.4,
-          stagger: 0.08,
+          duration: 0.35,
+          stagger: 0.06,
           ease: "power2.out",
-        }, '-=0.2');
+        }, '-=0.08');  // 斬撃とほぼ同時
 
         tl.to(shockwaves, {
           opacity: 0,
-          duration: 0.3,
-          stagger: 0.08,
+          duration: 0.25,
+          stagger: 0.06,
           ease: "power2.in",
-        }, '-=0.2');
+        }, '-=0.15');
       }
 
       // ===========================================
-      // フェーズ3: 切断と物理挙動（完璧なので維持）
+      // 物理挙動（切断と同時に即座に開始）
       // ===========================================
 
-      // 完全版のヒヒを非表示にする
-      tl.to([hihi1FullRef.current, hihi2FullRef.current], {
-        opacity: 0,
-        duration: 0.02,
-      }, '-=0.3');
-
-      // 分割版を表示
-      tl.to([hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current], {
-        opacity: 1,
-        duration: 0.02,
-      }, '-=0.02');
-
       // ----------------------------------------------
-      // 【下半分】激しい振動（その場で固定）- 完璧なので維持
+      // 【下半分】激しい振動（切断の瞬間から即座に）
       // ----------------------------------------------
       const vibrationTL = gsap.timeline();
 
@@ -244,10 +241,11 @@ export default function ZezehihiLogoAnimated({
         ease: "elastic.out(2, 0.3)",
       });
 
-      tl.add(vibrationTL, '-=0.28');
+      // 振動を切断と同時に開始（"-=0.08"で食い気味）
+      tl.add(vibrationTL, '-=0.08');
 
       // ----------------------------------------------
-      // 【上半分】重力による落下（回転しながら）- 完璧なので維持
+      // 【上半分】重力による落下（切断と同時に即座に）
       // ----------------------------------------------
       tl.to([hihi1TopRef.current, hihi2TopRef.current], {
         y: 60,
@@ -256,7 +254,14 @@ export default function ZezehihiLogoAnimated({
         opacity: 0.8,
         duration: 0.8,
         ease: "power2.in",
-      }, '-=0.28');
+      }, '-=0.08');  // 振動と同時に落下開始
+
+      // 気円斬の残像フェードアウト
+      tl.to(kienzanRef.current, {
+        opacity: 0,
+        duration: 0.15,
+        ease: "power2.out",
+      }, '-=0.7');
 
       // ===========================================
       // フェーズ4: 待機時間
@@ -264,7 +269,7 @@ export default function ZezehihiLogoAnimated({
       tl.to({}, { duration: 1.2 });
 
       // ===========================================
-      // フェーズ5: 復元（Restore）- 完璧なので維持
+      // フェーズ5: 復元（Restore）
       // ===========================================
 
       // 上半分が磁力で吸い寄せられるように元に戻る
@@ -355,28 +360,51 @@ export default function ZezehihiLogoAnimated({
           <stop offset="100%" stopColor="#00BFFF" stopOpacity="0" />
         </radialGradient>
 
-        {/* 気円斬のエッジグラデーション（中心白→エッジ青/黄） */}
-        <linearGradient id="kienzanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#FFD700" stopOpacity="0.6" />
-          <stop offset="50%" stopColor="#FFFFFF" stopOpacity="1" />
-          <stop offset="100%" stopColor="#87CEEB" stopOpacity="0.6" />
-        </linearGradient>
+        {/*
+        ====================================
+        座標の完全同期（Perfect Alignment）
+        ====================================
+        斬撃ラインの方程式:
+        - 始点: (300, 50)
+        - 終点: (750, 350)
+        - 傾き: (350-50)/(750-300) = 300/450 = 2/3
+        - 方程式: y = (2/3)x - 150
 
-        {/* 斜めの切断用クリップパス */}
+        文字の位置での切断ラインY座標:
+        - ヒヒ1（x=400-600の範囲）:
+          x=400: y = 266.67 - 150 = 116.67 ≈ 117
+          x=600: y = 400 - 150 = 250
+
+        - ヒヒ2（x=560-780の範囲）:
+          x=560: y = 373.33 - 150 = 223.33 ≈ 223
+          x=780: y = 520 - 150 = 370
+
+        クリップパスはこの線形方程式に完全に従う
+        ====================================
+        */}
+
+        {/* ヒヒ1（1文字目）上半分 - 斜め切断ライン上部 */}
         <clipPath id="hihi1TopClip">
-          <polygon points="400,130 600,130 600,200 400,150" />
+          {/* 切断ラインは y = (2/3)x - 150 に従う */}
+          <polygon points="400,100 600,100 600,250 400,117" />
         </clipPath>
 
+        {/* ヒヒ1（1文字目）下半分 - 斜め切断ライン下部 */}
         <clipPath id="hihi1BottomClip">
-          <polygon points="400,150 600,200 600,380 400,380" />
+          {/* 切断ラインは y = (2/3)x - 150 に従う */}
+          <polygon points="400,117 600,250 600,380 400,380" />
         </clipPath>
 
+        {/* ヒヒ2（2文字目）上半分 - 斜め切断ライン上部 */}
         <clipPath id="hihi2TopClip">
-          <polygon points="560,130 780,130 780,240 560,190" />
+          {/* 切断ラインは y = (2/3)x - 150 に従う */}
+          <polygon points="560,100 780,100 780,370 560,223" />
         </clipPath>
 
+        {/* ヒヒ2（2文字目）下半分 - 斜め切断ライン下部 */}
         <clipPath id="hihi2BottomClip">
-          <polygon points="560,190 780,240 780,380 560,380" />
+          {/* 切断ラインは y = (2/3)x - 150 に従う */}
+          <polygon points="560,223 780,370 780,380 560,380" />
         </clipPath>
       </defs>
 
@@ -501,6 +529,7 @@ export default function ZezehihiLogoAnimated({
 
       {/* ====================================== */}
       {/* VFX: 気円斬（Kienzan）- 超高密度エネルギーブレード */}
+      {/* 座標: 斬撃ラインと完全に同じ (300,50)→(750,350) */}
       {/* ====================================== */}
       <g ref={kienzanRef} opacity="0">
         {/* 外側の黄色の輝き（残像効果） */}
@@ -560,13 +589,15 @@ export default function ZezehihiLogoAnimated({
       </g>
 
       {/* ====================================== */}
-      {/* VFX: インパクト衝撃波（刃のみ光る） */}
+      {/* VFX: インパクト衝撃波 */}
+      {/* 中心座標: 斬撃が文字の中央を通過する位置 */}
+      {/* x=500でのy座標: y = (2/3)*500 - 150 = 183.33 */}
       {/* ====================================== */}
       <g ref={impactWavesRef}>
         <circle
           className="shockwave"
-          cx="550"
-          cy="200"
+          cx="500"
+          cy="183"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -575,8 +606,8 @@ export default function ZezehihiLogoAnimated({
         />
         <circle
           className="shockwave"
-          cx="550"
-          cy="200"
+          cx="500"
+          cy="183"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -585,8 +616,8 @@ export default function ZezehihiLogoAnimated({
         />
         <circle
           className="shockwave"
-          cx="550"
-          cy="200"
+          cx="500"
+          cy="183"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -595,8 +626,8 @@ export default function ZezehihiLogoAnimated({
         />
         <circle
           className="shockwave"
-          cx="550"
-          cy="200"
+          cx="500"
+          cy="183"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
