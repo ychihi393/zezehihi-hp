@@ -130,7 +130,7 @@ export default function ZezehihiLogoAnimated({
       tl.to({}, { duration: 0.8 });
 
       // ===========================================
-      // フェーズ1: 気円斬（Kienzan）- 超高速エネルギーブレード
+      // フェーズ1: 気円斬（Kienzan）- 完全通り抜け
       // ===========================================
 
       // 気円斬が出現し、弾丸のように突き抜ける
@@ -140,26 +140,37 @@ export default function ZezehihiLogoAnimated({
         ease: "power4.out",
       });
 
-      // 左上から右下へ超高速移動（0.08秒で突き抜ける）
-      // ※より速く、よりシャープに
+      //
+      // 完全通り抜け（Complete Through-Pass）
+      // 画面左上外側から右下外側まで完全に突き抜ける
+      // 移動距離: x=800, y=267 (1000-200=800, 317-50=267)
+      // フェードアウトせずに、高速で画面外へ飛び去る
+      //
       tl.to(kienzanRef.current, {
-        x: 450,
-        y: 300,
-        duration: 0.08,
+        x: 800,   // 右下の外側まで（viewBox外）
+        y: 267,   // 傾き1/3に従った移動
+        duration: 0.1,
         ease: "power1.in",
       }, "-=0.02");
 
+      // 画面外に飛び去った後、瞬時に消える（フェードではなく瞬時）
+      tl.to(kienzanRef.current, {
+        opacity: 0,
+        duration: 0.02,
+        ease: "power1.out",
+      }, "+=0.05");
+
       // ===========================================
-      // タイミングの短縮（Tighter Timing）
+      // タイミングの短縮（Tighter Timing）- 維持
       // 斬撃が文字の中央を通過した瞬間に切断が発生
-      // "-=0.06" で食い気味に反応させる
+      // "-=0.11" で食い気味に反応させる
       // ===========================================
 
       // 完全版のヒヒを非表示にする（斬撃の中盤で即座に）
       tl.to([hihi1FullRef.current, hihi2FullRef.current], {
         opacity: 0,
         duration: 0.01,
-      }, '-=0.06');  // 食い気味に切断
+      }, '-=0.11');  // 調整（0.1秒の移動中の中盤）
 
       // 分割版を表示（同時）
       tl.to([hihi1TopRef.current, hihi1BottomRef.current, hihi2TopRef.current, hihi2BottomRef.current], {
@@ -168,7 +179,7 @@ export default function ZezehihiLogoAnimated({
       }, '-=0.01');
 
       // ===========================================
-      // 衝撃波（斬撃と同時多発的に）
+      // 衝撃波（斬撃と同時多発的に）- 維持
       // ===========================================
       if (impactWavesRef.current) {
         const shockwaves = impactWavesRef.current.querySelectorAll('.shockwave');
@@ -179,7 +190,7 @@ export default function ZezehihiLogoAnimated({
           duration: 0.35,
           stagger: 0.06,
           ease: "power2.out",
-        }, '-=0.08');  // 斬撃とほぼ同時
+        }, '-=0.13');  // 斬撃とほぼ同時
 
         tl.to(shockwaves, {
           opacity: 0,
@@ -190,7 +201,7 @@ export default function ZezehihiLogoAnimated({
       }
 
       // ===========================================
-      // 物理挙動（切断と同時に即座に開始）
+      // 物理挙動（切断と同時に即座に開始）- 維持
       // ===========================================
 
       // ----------------------------------------------
@@ -241,8 +252,8 @@ export default function ZezehihiLogoAnimated({
         ease: "elastic.out(2, 0.3)",
       });
 
-      // 振動を切断と同時に開始（"-=0.08"で食い気味）
-      tl.add(vibrationTL, '-=0.08');
+      // 振動を切断と同時に開始（"-=0.13"で食い気味）
+      tl.add(vibrationTL, '-=0.13');
 
       // ----------------------------------------------
       // 【上半分】重力による落下（切断と同時に即座に）
@@ -254,14 +265,7 @@ export default function ZezehihiLogoAnimated({
         opacity: 0.8,
         duration: 0.8,
         ease: "power2.in",
-      }, '-=0.08');  // 振動と同時に落下開始
-
-      // 気円斬の残像フェードアウト
-      tl.to(kienzanRef.current, {
-        opacity: 0,
-        duration: 0.15,
-        ease: "power2.out",
-      }, '-=0.7');
+      }, '-=0.13');  // 振動と同時に落下開始
 
       // ===========================================
       // フェーズ4: 待機時間
@@ -269,7 +273,7 @@ export default function ZezehihiLogoAnimated({
       tl.to({}, { duration: 1.2 });
 
       // ===========================================
-      // フェーズ5: 復元（Restore）
+      // フェーズ5: 復元（Restore）- 維持
       // ===========================================
 
       // 上半分が磁力で吸い寄せられるように元に戻る
@@ -362,49 +366,63 @@ export default function ZezehihiLogoAnimated({
 
         {/*
         ====================================
-        座標の完全同期（Perfect Alignment）
+        角度調整パラメータ（Angle Parameters）
         ====================================
-        斬撃ラインの方程式:
-        - 始点: (300, 50)
-        - 終点: (750, 350)
-        - 傾き: (350-50)/(750-300) = 300/450 = 2/3
-        - 方程式: y = (2/3)x - 150
+        【重要】この値を変更すると、斬撃の角度が変わります
 
-        文字の位置での切断ラインY座標:
-        - ヒヒ1（x=400-600の範囲）:
-          x=400: y = 266.67 - 150 = 116.67 ≈ 117
-          x=600: y = 400 - 150 = 250
+        斬撃ラインの方程式（より緩やかな角度）:
+        - 始点: (200, 50)   ← 画面左上の外側から開始
+        - 終点: (1000, 317) ← 画面右下の外側まで突き抜ける
+        - 傾き: (317-50)/(1000-200) = 267/800 = 1/3（緩やか）
+        - 方程式: y = (1/3)x - 16.67
 
-        - ヒヒ2（x=560-780の範囲）:
-          x=560: y = 373.33 - 150 = 223.33 ≈ 223
-          x=780: y = 520 - 150 = 370
-
-        クリップパスはこの線形方程式に完全に従う
+        ※傾きを小さくするほど、より水平に近い斬撃になります
+        ※現在の傾き 1/3 は、前回の 2/3 の半分（より緩やか）
         ====================================
         */}
 
-        {/* ヒヒ1（1文字目）上半分 - 斜め切断ライン上部 */}
+        {/*
+        ====================================
+        切断ライン座標計算（Complete Through-Pass）
+        ====================================
+        文字の位置での切断ラインY座標:
+        方程式 y = (1/3)x - 16.67 を使用
+
+        ヒヒ1（x=400-600の範囲）:
+          x=400: y = (1/3)*400 - 16.67 = 116.67
+          x=600: y = (1/3)*600 - 16.67 = 183.33
+
+        ヒヒ2（x=560-780の範囲）:
+          x=560: y = (1/3)*560 - 16.67 = 170
+          x=780: y = (1/3)*780 - 16.67 = 243.33
+
+        衝撃波中心（x=500）:
+          y = (1/3)*500 - 16.67 = 150
+        ====================================
+        */}
+
+        {/* ヒヒ1（1文字目）上半分 - 緩やかな斜め切断ライン上部 */}
         <clipPath id="hihi1TopClip">
-          {/* 切断ラインは y = (2/3)x - 150 に従う */}
-          <polygon points="400,100 600,100 600,250 400,117" />
+          {/* 方程式 y = (1/3)x - 16.67 に従う */}
+          <polygon points="400,80 600,80 600,183 400,117" />
         </clipPath>
 
-        {/* ヒヒ1（1文字目）下半分 - 斜め切断ライン下部 */}
+        {/* ヒヒ1（1文字目）下半分 - 緩やかな斜め切断ライン下部 */}
         <clipPath id="hihi1BottomClip">
-          {/* 切断ラインは y = (2/3)x - 150 に従う */}
-          <polygon points="400,117 600,250 600,380 400,380" />
+          {/* 方程式 y = (1/3)x - 16.67 に従う */}
+          <polygon points="400,117 600,183 600,380 400,380" />
         </clipPath>
 
-        {/* ヒヒ2（2文字目）上半分 - 斜め切断ライン上部 */}
+        {/* ヒヒ2（2文字目）上半分 - 緩やかな斜め切断ライン上部 */}
         <clipPath id="hihi2TopClip">
-          {/* 切断ラインは y = (2/3)x - 150 に従う */}
-          <polygon points="560,100 780,100 780,370 560,223" />
+          {/* 方程式 y = (1/3)x - 16.67 に従う */}
+          <polygon points="560,80 780,80 780,243 560,170" />
         </clipPath>
 
-        {/* ヒヒ2（2文字目）下半分 - 斜め切断ライン下部 */}
+        {/* ヒヒ2（2文字目）下半分 - 緩やかな斜め切断ライン下部 */}
         <clipPath id="hihi2BottomClip">
-          {/* 切断ラインは y = (2/3)x - 150 に従う */}
-          <polygon points="560,223 780,370 780,380 560,380" />
+          {/* 方程式 y = (1/3)x - 16.67 に従う */}
+          <polygon points="560,170 780,243 780,380 560,380" />
         </clipPath>
       </defs>
 
@@ -529,13 +547,15 @@ export default function ZezehihiLogoAnimated({
 
       {/* ====================================== */}
       {/* VFX: 気円斬（Kienzan）- 超高密度エネルギーブレード */}
-      {/* 座標: 斬撃ラインと完全に同じ (300,50)→(750,350) */}
+      {/* 座標: 画面外から画面外へ完全通り抜け */}
+      {/* 始点: (200, 50) ← 左上外側 */}
+      {/* 終点: (1000, 317) ← 右下外側（viewBox外） */}
       {/* ====================================== */}
       <g ref={kienzanRef} opacity="0">
         {/* 外側の黄色の輝き（残像効果） */}
         <line
-          x1="300" y1="50"
-          x2="750" y2="350"
+          x1="200" y1="50"
+          x2="1000" y2="317"
           stroke="#FFD700"
           strokeWidth="12"
           strokeLinecap="round"
@@ -548,8 +568,8 @@ export default function ZezehihiLogoAnimated({
 
         {/* 中間層の青白い光 */}
         <line
-          x1="300" y1="50"
-          x2="750" y2="350"
+          x1="200" y1="50"
+          x2="1000" y2="317"
           stroke="#87CEEB"
           strokeWidth="6"
           strokeLinecap="round"
@@ -562,8 +582,8 @@ export default function ZezehihiLogoAnimated({
 
         {/* コアの鋭い白い刃（最も強烈） */}
         <line
-          x1="300" y1="50"
-          x2="750" y2="350"
+          x1="200" y1="50"
+          x2="1000" y2="317"
           stroke="#FFFFFF"
           strokeWidth="3"
           strokeLinecap="round"
@@ -576,8 +596,8 @@ export default function ZezehihiLogoAnimated({
 
         {/* 最も内側のシャープなエッジ */}
         <line
-          x1="300" y1="50"
-          x2="750" y2="350"
+          x1="200" y1="50"
+          x2="1000" y2="317"
           stroke="#FFFFFF"
           strokeWidth="1"
           strokeLinecap="round"
@@ -591,13 +611,13 @@ export default function ZezehihiLogoAnimated({
       {/* ====================================== */}
       {/* VFX: インパクト衝撃波 */}
       {/* 中心座標: 斬撃が文字の中央を通過する位置 */}
-      {/* x=500でのy座標: y = (2/3)*500 - 150 = 183.33 */}
+      {/* x=500, y = (1/3)*500 - 16.67 = 150 */}
       {/* ====================================== */}
       <g ref={impactWavesRef}>
         <circle
           className="shockwave"
           cx="500"
-          cy="183"
+          cy="150"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -607,7 +627,7 @@ export default function ZezehihiLogoAnimated({
         <circle
           className="shockwave"
           cx="500"
-          cy="183"
+          cy="150"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -617,7 +637,7 @@ export default function ZezehihiLogoAnimated({
         <circle
           className="shockwave"
           cx="500"
-          cy="183"
+          cy="150"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
@@ -627,7 +647,7 @@ export default function ZezehihiLogoAnimated({
         <circle
           className="shockwave"
           cx="500"
-          cy="183"
+          cy="150"
           r="0"
           fill="none"
           stroke="url(#shockwaveGradient)"
