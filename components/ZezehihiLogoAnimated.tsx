@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -13,6 +13,11 @@ export default function ZezehihiLogoAnimated({
   className = "",
   onAnimationComplete,
 }: ZezehihiLogoAnimatedProps) {
+  // ===========================================
+  // State: アニメーション発火フラグ
+  // ===========================================
+  const [animationTriggered, setAnimationTriggered] = useState(false);
+
   // ===========================================
   // Refs for all animated elements
   // ===========================================
@@ -35,12 +40,71 @@ export default function ZezehihiLogoAnimated({
   const impactWavesRef = useRef<SVGGElement>(null);
   const zezehihiTextRef = useRef<SVGTextElement>(null);
 
+  // ===========================================
+  // 初期状態設定：完全なロゴを表示
+  // ===========================================
+  useEffect(() => {
+    // 初期状態で完全なロゴを表示
+    if (zeze1Ref.current && zeze2Ref.current && zezehihiTextRef.current) {
+      gsap.set([zeze1Ref.current, zeze2Ref.current], {
+        scale: 1,
+        opacity: 1,
+      });
+      gsap.set(zezehihiTextRef.current, {
+        y: 0,
+        opacity: 1,
+      });
+    }
+    if (hihi1FullRef.current && hihi2FullRef.current) {
+      gsap.set([hihi1FullRef.current, hihi2FullRef.current], {
+        opacity: 1,
+      });
+    }
+  }, []);
+
+  // ===========================================
+  // スクロールロックとトリガーイベント監視
+  // ===========================================
+  useEffect(() => {
+    // 初期状態でスクロールをロック
+    document.body.style.overflow = 'hidden';
+
+    const triggerAnimation = () => {
+      setAnimationTriggered(true);
+    };
+
+    const handleWheel = () => triggerAnimation();
+    const handleTouchMove = () => triggerAnimation();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // スクロール系のキー: Space(32), PageUp(33), PageDown(34), End(35), Home(36), Arrow keys(37-40)
+      const scrollKeys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
+      if (scrollKeys.includes(e.keyCode)) {
+        triggerAnimation();
+      }
+    };
+
+    // イベントリスナー登録（once: trueで一度だけ発火）
+    window.addEventListener('wheel', handleWheel, { once: true, passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { once: true, passive: true });
+    window.addEventListener('keydown', handleKeyDown, { once: true });
+
+    // クリーンアップ関数
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   useGSAP(
     () => {
-      if (!containerRef.current) return;
+      // アニメーションが発火されるまで実行しない
+      if (!animationTriggered || !containerRef.current) return;
 
       const tl = gsap.timeline({
         onComplete: () => {
+          // アニメーション完了後、スクロールロックを解除
+          document.body.style.overflow = 'auto';
           onAnimationComplete?.();
         },
       });
@@ -52,19 +116,25 @@ export default function ZezehihiLogoAnimated({
 
       // ===========================================
       // 初期状態設定
+      // スクロールトリガー時には既に完全なロゴが表示されている
+      // ここではアニメーション開始時の初期状態を設定
       // ===========================================
+      // ゼゼは最初から完全に表示されているので、アニメーション開始時も表示されたまま
+      // （ゼゼの登場アニメーションは実行するが、既に表示されている状態から）
       gsap.set([zeze1Ref.current, zeze2Ref.current], {
-        scale: 0.8,
-        opacity: 0,
+        scale: 1,
+        opacity: 1,
         transformOrigin: "center center",
         force3D: true,
       });
 
+      // ZEZEHIHIテキストも最初から表示されている
       gsap.set(zezehihiTextRef.current, {
-        y: 20,
-        opacity: 0,
+        y: 0,
+        opacity: 1,
       });
 
+      // ヒヒは完全版で表示されている
       gsap.set([hihi1FullRef.current, hihi2FullRef.current], {
         opacity: 1,
       });
@@ -94,40 +164,12 @@ export default function ZezehihiLogoAnimated({
       }
 
       // ===========================================
-      // フェーズ0: ゼゼとZEZEHIHIテキストの登場
+      // フェーズ0: 初期状態は完全なロゴが既に表示されている
+      // スクロールトリガー時にはゼゼ・ZEZEHIHI・ヒヒは既に表示済み
+      // 気円斬アニメーションまで少し待つ
       // ===========================================
-      tl.to([zeze1Ref.current, zeze2Ref.current], {
-        scale: 1,
-        opacity: 1,
-        duration: 0.6,
-        ease: "back.out(1.7)",
-        stagger: 0.1,
-      });
-
-      tl.to(
-        zezehihiTextRef.current,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: "power2.out",
-        },
-        "-=0.3"
-      );
-
-      // ヒヒの登場（少し遅れて）
-      tl.to(
-        [hihi1FullRef.current, hihi2FullRef.current],
-        {
-          opacity: 1,
-          duration: 0.4,
-          ease: "power2.out",
-        },
-        "-=0.2"
-      );
-
-      // 少し待つ
-      tl.to({}, { duration: 0.8 });
+      // 既に完全なロゴが表示されているので、少し待ってから気円斬へ
+      tl.to({}, { duration: 0.3 });
 
       // ===========================================
       // フェーズ1: 気円斬（Kienzan）- 完全通り抜け
@@ -276,7 +318,7 @@ export default function ZezehihiLogoAnimated({
         });
       }
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [animationTriggered] }
   );
 
   return (
