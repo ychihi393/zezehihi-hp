@@ -1,0 +1,24 @@
+{
+  "name": "株式会社ゼゼヒヒ",
+  "short_name": "ゼゼヒヒ",
+  "description": "株式会社ゼゼヒヒは「是々非々」の精神を持ち、既存の枠組みにとらわれず顧客メリットを最大化する会社です。不動産集客支援業、広告業、各種代理店、SNSアカウント運用代理店を展開しています。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "lang": "ja",
+  "dir": "ltr",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -5,8 +5,8 @@ import { ArrowRight } from "lucide-react";
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="relative py-20 sm:py-24 md:py-32 lg:py-40 bg-white overflow-hidden">
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+    <section id="contact" className="relative py-[60px] sm:py-24 md:py-32 lg:py-40 bg-white overflow-hidden">
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -44,16 +44,17 @@ export default function ContactSection() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="text-center"
           >
-            <motion.a
+            <a
               href="/contact"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className="group inline-flex items-center justify-center gap-3 bg-[#0044CC] hover:bg-[#003399] text-white font-bold text-lg sm:text-xl py-5 sm:py-6 px-12 sm:px-16 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              className="group inline-flex items-center justify-center gap-3 bg-[#0044CC] hover:bg-[#003399] text-white font-bold text-lg sm:text-xl py-5 sm:py-6 px-12 sm:px-16 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:brightness-110"
+              style={{ 
+                fontFamily: "'Montserrat', sans-serif",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              }}
             >
               <span>お問い合わせフォームへ</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </motion.a>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
+            </a>
           </motion.div>
         </div>
       </div>

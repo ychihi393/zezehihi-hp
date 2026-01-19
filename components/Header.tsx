@@ -44,9 +44,12 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
-          ? "bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm" 
-          : "glass bg-white/10 backdrop-blur-md"
+          ? "bg-white/95 backdrop-blur-[12px] border-b border-gray-200/50 shadow-sm" 
+          : "glass bg-white/10 backdrop-blur-[12px]"
       }`}
+      style={{
+        borderTop: scrolled ? "none" : "1px solid rgba(255, 255, 255, 0.2)",
+      }}
     >
       <nav className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between h-16">
@@ -90,7 +93,7 @@ export default function Header() {
                 transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 {item.name}
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
+                <span className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
                   scrolled ? "bg-gray-900" : "bg-white"
                 }`}></span>
               </motion.button>

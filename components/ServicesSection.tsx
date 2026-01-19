@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Building2, Megaphone, Shield, MessageSquare } from "lucide-react";
+import ScrollFadeIn from "./ScrollFadeIn";
 
 const services = [
   {
@@ -28,8 +29,8 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="py-20 sm:py-24 md:py-32 lg:py-40 bg-[#f5f7fa] relative overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+    <section id="services" className="py-[60px] sm:py-24 md:py-32 lg:py-40 bg-[#f5f7fa] relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -63,19 +64,14 @@ export default function ServicesSection() {
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.8,
-                  delay: index * 0.15,
-                  ease: [0.25, 0.1, 0.25, 1]
-                }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="group relative bg-white rounded-xl p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300"
-              >
+              <ScrollFadeIn key={service.title} delay={index * 100}>
+                <motion.div
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="group relative bg-white/95 backdrop-blur-[12px] rounded-xl p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300"
+                  style={{
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                  }}
+                >
                 <div className="relative inline-flex p-4 rounded-lg mb-6 bg-[#0044CC]/10 group-hover:bg-[#0044CC]/20 transition-colors duration-300">
                   <Icon className="w-7 h-7 text-[#0044CC]" />
                 </div>
@@ -91,7 +87,8 @@ export default function ServicesSection() {
                 >
                   {service.description}
                 </p>
-              </motion.div>
+                </motion.div>
+              </ScrollFadeIn>
             );
           })}
         </div>

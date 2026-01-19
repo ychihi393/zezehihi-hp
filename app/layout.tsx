@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: {
     default: "株式会社ゼゼヒヒ | 不動産集客支援・広告業・各種代理店",
     template: "%s | 株式会社ゼゼヒヒ",
+    absolute: "株式会社ゼゼヒヒ | 不動産集客支援・広告業・各種代理店",
   },
   description:
     "株式会社ゼゼヒヒは「是々非々」の精神を持ち、既存の枠組みにとらわれず顧客メリットを最大化する会社です。不動産集客支援業、広告業、各種代理店、SNSアカウント運用代理店を展開しています。",
@@ -22,6 +23,10 @@ export const metadata: Metadata = {
   creator: "株式会社ゼゼヒヒ",
   publisher: "株式会社ゼゼヒヒ",
   applicationName: "株式会社ゼゼヒヒ",
+  appleWebApp: {
+    title: "株式会社ゼゼヒヒ",
+    statusBarStyle: "default",
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -31,6 +36,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "ja_JP",

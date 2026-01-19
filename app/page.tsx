@@ -12,6 +12,11 @@ export default function Home() {
     "@type": "Organization",
     name: "株式会社ゼゼヒヒ",
     legalName: "株式会社ゼゼヒヒ",
+    alternateName: "ゼゼヒヒ",
+    brand: {
+      "@type": "Brand",
+      name: "株式会社ゼゼヒヒ",
+    },
     url: "https://zezehihi-hp.pages.dev",
     logo: "https://zezehihi-hp.pages.dev/logo.png",
     description:
@@ -43,6 +48,30 @@ export default function Home() {
     ],
   };
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "株式会社ゼゼヒヒ",
+    alternateName: "ゼゼヒヒ",
+    url: "https://zezehihi-hp.pages.dev",
+    publisher: {
+      "@type": "Organization",
+      name: "株式会社ゼゼヒヒ",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://zezehihi-hp.pages.dev/logo.png",
+      },
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: "https://zezehihi-hp.pages.dev/?s={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
       {/* 構造化データ（JSON-LD） */}
@@ -50,6 +79,12 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(organizationSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteSchema),
         }}
       />
       <main className="min-h-screen">
