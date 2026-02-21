@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zezehihi-hp.pages.dev/sitemap.xml
+Sitemap: https://zezehihi-homepage.vercel.app/sitemap.xml

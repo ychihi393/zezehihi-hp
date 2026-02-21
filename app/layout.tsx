@@ -37,14 +37,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://zezehihi-hp.pages.dev"),
+  metadataBase: new URL("https://zezehihi-homepage.vercel.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "ja_JP",
-    url: "https://zezehihi-hp.pages.dev",
+    url: "https://zezehihi-homepage.vercel.app",
     siteName: "株式会社ゼゼヒヒ",
     title: "株式会社ゼゼヒヒ（ZEZEHIHI）| 不動産集客支援・広告業・各種代理店",
     description:

@@ -13,8 +13,8 @@ export default function Home() {
     name: "株式会社ゼゼヒヒ",
     legalName: "株式会社ゼゼヒヒ",
     alternateName: ["ゼゼヒヒ", "ぜぜひひ", "ZEZEHIHI", "(株)ゼゼヒヒ", "是々非々"],
-    url: "https://zezehihi-hp.pages.dev",
-    logo: "https://zezehihi-hp.pages.dev/logo.png",
+    url: "https://zezehihi-homepage.vercel.app",
+    logo: "https://zezehihi-homepage.vercel.app/logo.png",
     description:
       "株式会社ゼゼヒヒは「是々非々」の精神を持ち、既存の枠組みにとらわれず顧客メリットを最大化する会社です。",
     address: {
