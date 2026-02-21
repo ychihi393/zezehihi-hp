@@ -26,7 +26,7 @@ export default function HeroSection() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 text-center py-12 sm:py-16 md:py-20">
         {/* SEO用のh1タグ（視覚的には非表示） */}
-        <h1 className="sr-only">株式会社ゼゼヒヒ | 不動産集客支援・広告業・各種代理店</h1>
+        <h1 className="sr-only">株式会社ゼゼヒヒ（ゼゼヒヒ／ZEZEHIHI）| 不動産集客支援・広告業・各種代理店 | 東京都新宿区</h1>
         
         {/* メインロゴ - GSAPアニメーション版 */}
         <motion.div

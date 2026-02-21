@@ -12,6 +12,7 @@ export default function Home() {
     "@type": "Organization",
     name: "株式会社ゼゼヒヒ",
     legalName: "株式会社ゼゼヒヒ",
+    alternateName: ["ゼゼヒヒ", "ぜぜひひ", "ZEZEHIHI", "(株)ゼゼヒヒ", "是々非々"],
     url: "https://zezehihi-hp.pages.dev",
     logo: "https://zezehihi-hp.pages.dev/logo.png",
     description:
