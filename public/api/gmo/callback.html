@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GMO認可コールバック</title>
+<style>
+  body { font-family: -apple-system, sans-serif; max-width: 500px; margin: 60px auto; padding: 0 20px; text-align: center; }
+  .success { color: #0b7a75; }
+  .error { color: #b91c1c; }
+  .code-box { background: #f3f4f6; border: 2px solid #0b7a75; border-radius: 8px; padding: 16px; margin: 20px 0; word-break: break-all; font-family: monospace; font-size: 14px; user-select: all; cursor: pointer; }
+  .copy-btn { background: #0b7a75; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 15px; cursor: pointer; margin: 12px 0; }
+  .copy-btn:hover { background: #095c58; }
+  .note { color: #6b7280; font-size: 13px; margin-top: 16px; }
+  .copied { color: #0b7a75; font-weight: bold; display: none; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="content"></div>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+  var error = params.get('error');
+  var el = document.getElementById('content');
+
+  if (error) {
+    el.innerHTML = '<h2 class="error">認可エラー</h2><p>' + error + '</p><p class="note">ダッシュボードに戻って再試行してください。</p>';
+    return;
+  }
+  if (!code) {
+    el.innerHTML = '<h2 class="error">認可コードがありません</h2><p class="note">GMO認可画面からリダイレクトされていない場合、ダッシュボードの「GMO認可」ボタンからやり直してください。</p>';
+    return;
+  }
+  el.innerHTML = '<h2 class="success">GMO認可が完了しました</h2>' +
+    '<p>以下の認可コードをコピーして、ダッシュボードに貼り付けてください。</p>' +
+    '<div class="code-box" id="codeBox">' + code + '</div>' +
+    '<button class="copy-btn" id="copyBtn">コードをコピー</button>' +
+    '<p class="copied" id="copiedMsg">コピーしました</p>' +
+    '<p class="note">このコードは1回限り有効です。<br>ダッシュボード（localhost:8000）に戻り、表示される入力欄に貼り付けてください。</p>';
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    navigator.clipboard.writeText(code).then(function() {
+      document.getElementById('copiedMsg').style.display = 'block';
+    });
+  });
+  document.getElementById('codeBox').addEventListener('click', function() {
+    navigator.clipboard.writeText(code).then(function() {
+      document.getElementById('copiedMsg').style.display = 'block';
+    });
+  });
+})();
+</script>
+</body>
+</html>
